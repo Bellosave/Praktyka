@@ -1,0 +1,13 @@
+.env
+*.local.json
+appsettings.Development.json
+bin/
+obj/
+.vs/
+node_modules/
+dist/
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
+*.backup
