@@ -66,8 +66,8 @@ istnieją obecnie w tej gałęzi.
 
 ## Aktualny stan
 
-W poprzednim zadaniu przygotowałem prostą stronę z przyciskiem.
-Jej pliki znajdują się w osobnej gałęzi `introduce-to-ci`.
+Przygotowałem prostą stronę z przyciskiem wyświetlającym komunikat.
+Jej pliki zostały scalone do gałęzi `main`.
 
 Widoki zarządzania zadaniami oraz połączenie z API
 nie zostały jeszcze przygotowane.

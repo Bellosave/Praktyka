@@ -40,9 +40,9 @@ Są to planowane funkcje. Nie zostały jeszcze zaimplementowane.
 
 Technologia backendu nie została jeszcze ustalona.
 
-W poprzednim zadaniu przygotowałem prostą stronę i uruchomiłem sprawdzanie
-HTML, CSS i JavaScript. Te pliki znajdują się w gałęzi `introduce-to-ci`.
-Nie zostały jeszcze scalone do `main`.
+W poprzednim zadaniu przygotowałem prostą stronę i konfigurację
+sprawdzania HTML, CSS i JavaScript. Pliki zostały scalone do `main`.
+Pipeline GitHub Actions dla tej gałęzi zakończył się poprawnie.
 
 ## Struktura projektu
 
