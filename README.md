@@ -1,79 +1,29 @@
-# Internetowy system zarządzania zadaniami
+# praktyka-project - Moje Zadania
 
-## Opis projektu
+Repo na praktyki, INF.03. Aplikacja do zapisywania zadań.
 
-W ramach praktyk przygotowuję aplikację internetową do zarządzania zadaniami.
-Chcę, żeby użytkownik mógł zapisywać rzeczy do zrobienia i sprawdzać,
-które zadania zostały już wykonane.
+## Co to jest
 
-Projekt jest na początkowym etapie. Na razie przygotowałem strukturę
-repozytorium, a teraz opisuję, jak ma działać aplikacja.
+Zwykła lista zadań. Można dodawać zadania, zmieniać status (do zrobienia / w trakcie / wykonane), edytować i usuwać. Do tego komentarze i logowanie (na razie prototyp).
 
-## Cel projektu
-
-Chcę stworzyć prosty system, który pomoże uporządkować zadania w jednym miejscu.
-
-Podczas pracy nad projektem chcę nauczyć się tworzyć strony internetowe,
-łączyć je z serwerem i korzystać z bazy danych. Ćwiczę też pracę z Git,
-GitHub i pisanie dokumentacji w Markdown.
-
-## Planowane funkcjonalności
-
-W aplikacji planuję dodać możliwość:
-- wyświetlania listy zadań;
-- dodawania zadania z tytułem i opisem;
-- edytowania zadania;
-- zmiany statusu zadania;
-- usuwania zadania;
-- wyszukiwania i filtrowania zadań.
-
-Są to planowane funkcje. Nie zostały jeszcze zaimplementowane.
-
-## Technologie
-
-- **HTML** — do przygotowania struktury strony.
-- **CSS** — do ustawienia wyglądu strony.
-- **JavaScript** — do obsługi interakcji i wysyłania żądań do API.
-- **PostgreSQL** — planowana baza danych do przechowywania zadań.
-- **Git i GitHub** — do zapisywania historii zmian i pracy z gałęziami.
-- **GitHub Actions** — do automatycznego sprawdzania plików projektu.
-
-Technologia backendu nie została jeszcze ustalona.
-
-W poprzednim zadaniu przygotowałem prostą stronę i konfigurację
-sprawdzania HTML, CSS i JavaScript. Pliki zostały scalone do `main`.
-Pipeline GitHub Actions dla tej gałęzi zakończył się poprawnie.
-
-## Struktura projektu
+## Gdzie co jest
 
 ```text
-Praktyka/
-├── .github/
-│   └── workflows/
-├── frontend/
-├── backend/
-├── database/
-├── docs/
-├── tests/
-├── .gitignore
-└── README.md
+frontend/   - strona (index.html + style.css + app.js)
+backend/    - tu później będzie API
+database/   - baza PostgreSQL (schema.sql, seed.sql)
+docs/       - opis, kolory, ERD
+tests/      - co sprawdzałem ręcznie
 ```
 
-- `frontend/` — tutaj będę tworzyć część widoczną dla użytkownika.
-- `backend/` — tutaj planuję przygotować część serwerową.
-- `database/` — miejsce na pliki związane z bazą danych.
-- `docs/` — miejsce na dodatkową dokumentację.
-- `tests/` — miejsce na testy aplikacji.
-- `.github/workflows/` — miejsce na pliki automatycznych kontroli.
+## Jak odpalić
 
-## Dokumentacja
+1. Otwierasz `frontend/index.html` w Chrome, nic nie trzeba instalować.
+2. Baza: instalujesz PostgreSQL 18, hasło dajesz `postgres`, tworzysz bazę `taskmanager` i odpalasz `database/schema.sql`, potem `seed.sql`.
 
-Dokładniejszy opis poszczególnych części projektu przygotowuję w plikach:
-- [README frontendu](frontend/README.md);
-- [README backendu](backend/README.md).
+## Docs
 
-## Uruchomienie
-
-Pełna aplikacja nie jest jeszcze gotowa do uruchomienia.
-Instrukcję dodam, gdy przygotuję działające części projektu
-i połączę je z bazą danych.
+- `docs/wymagania.md` - co program ma robić
+- `docs/design.md` - jak ma wyglądać
+- `docs/erd.md` - baza, tabele USERS, TASKS, COMMENTS
+- `docs/notatki-markdown.md` - moje notatki z Markdown
