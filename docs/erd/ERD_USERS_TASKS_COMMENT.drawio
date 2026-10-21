@@ -1,0 +1,49 @@
+<mxfile host="app.diagrams.net" agent="ChatGPT">
+  <diagram id="erd-users-tasks-comments" name="ERD">
+    <mxGraphModel dx="1172" dy="647" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="users" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1F4E78;fontColor=#FFFFFF;fontStyle=1;fontSize=16;strokeColor=#163A5A;align=center;verticalAlign=middle;" value="USERS" vertex="1">
+          <mxGeometry height="36" width="270" x="40" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="users_fields" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;fontColor=#222222;fontSize=13;strokeColor=#7F9DB9;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;" value="🔑 &lt;b&gt;user_id&lt;/b&gt; : INT (PK)&lt;br&gt;username : VARCHAR(50) (UNIQUE)&lt;br&gt;email : VARCHAR(255) (UNIQUE)&lt;br&gt;password_hash : VARCHAR(255)&lt;br&gt;created_at : DATETIME" vertex="1">
+          <mxGeometry height="150" width="270" x="40" y="190" as="geometry" />
+        </mxCell>
+        <mxCell id="tasks" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1F4E78;fontColor=#FFFFFF;fontStyle=1;fontSize=16;strokeColor=#163A5A;align=center;verticalAlign=middle;" value="TASKS" vertex="1">
+          <mxGeometry height="36" width="300" x="450" as="geometry" />
+        </mxCell>
+        <mxCell id="tasks_fields" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;fontColor=#222222;fontSize=13;strokeColor=#7F9DB9;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;" value="🔑 &lt;b&gt;task_id&lt;/b&gt; : INT (PK)&lt;br&gt;title : VARCHAR(150)&lt;br&gt;description : TEXT&lt;br&gt;status : VARCHAR(20)&lt;br&gt;created_at : DATETIME&lt;br&gt;due_date : DATETIME (NULL)&lt;br&gt;👤 &lt;b&gt;user_id&lt;/b&gt; : INT (FK → USERS.user_id)" vertex="1">
+          <mxGeometry height="190" width="300" x="450" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="comments" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1F4E78;fontColor=#FFFFFF;fontStyle=1;fontSize=16;strokeColor=#163A5A;align=center;verticalAlign=middle;" value="COMMENT" vertex="1">
+          <mxGeometry height="36" width="300" x="840" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="comments_fields" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;fontColor=#222222;fontSize=13;strokeColor=#7F9DB9;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;" value="🔑 &lt;b&gt;comment_id&lt;/b&gt; : INT (PK)&lt;br&gt;content : TEXT&lt;br&gt;created_at : DATETIME&lt;br&gt;👤 &lt;b&gt;user_id&lt;/b&gt; : INT (FK → USERS.user_id)&lt;br&gt;📌 &lt;b&gt;task_id&lt;/b&gt; : INT (FK → TASKS.task_id)" vertex="1">
+          <mxGeometry height="150" width="300" x="840" y="176" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_user_tasks" edge="1" parent="1" source="users_fields" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#34495E;strokeWidth=2;endArrow=ERoneToMany;endFill=0;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.55;entryX=0;entryY=0.55;" target="tasks_fields" value="&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&amp;nbsp;(1:N)&lt;/div&gt;">
+          <mxGeometry relative="1" x="0.3243" y="16" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="370" y="272.5" />
+              <mxPoint x="370" y="280.5" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel_user_comments" edge="1" parent="1" source="users_fields" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#34495E;strokeWidth=2;endArrow=ERoneToMany;endFill=0;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.85;entryX=0;entryY=0.75;" target="comments_fields" value="pisze komentarze&lt;div&gt;&amp;nbsp;(1:N)&lt;/div&gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_task_comments" edge="1" parent="1" source="tasks_fields" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#34495E;strokeWidth=2;endArrow=ERoneToMany;endFill=0;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.9;entryX=0;entryY=0.9;" target="comments_fields" value="&lt;div style=&quot;text-align: start;&quot;&gt;&lt;span style=&quot;background-color: light-dark(rgb(255, 255, 255), rgb(18, 18, 18)); color: light-dark(#000000, var(--ge-light-color, #ffffff));&quot;&gt;ma komentarze&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;text-align: start;&quot;&gt;&lt;span style=&quot;background-color: light-dark(rgb(255, 255, 255), rgb(18, 18, 18)); color: light-dark(#000000, var(--ge-light-color, #ffffff));&quot;&gt;(1:N)&lt;/span&gt;&lt;/div&gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="note" parent="1" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=13;align=left;verticalAlign=top;spacing=10;" value="&lt;div&gt;&lt;b&gt;Relacje:&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;• Jeden użytkownik może mieć wiele zadań.&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;• Jeden użytkownik może napisać wiele komentarzy.&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;• Jedno zadanie może mieć wiele komentarzy.&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;• Każde zadanie ma jednego właściciela.&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;• Każdy komentarz ma jednego autora i dotyczy jednego zadania.&lt;/b&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="125" width="430" x="370" y="440" as="geometry" />
+        </mxCell>
+        <mxCell id="k-vBQnKUmS4yQ9MKcIb9-1" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="Ma zadania" vertex="1">
+          <mxGeometry height="30" width="130" x="320" y="240" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
