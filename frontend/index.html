@@ -4,21 +4,44 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lista zadań</title>
+
+  <title>Task Manager</title>
+
   <link rel="stylesheet" href="css/style.css">
   <script src="js/app.js" defer></script>
 </head>
-<body>
-  <main class="container">
-    <header>
-      <h1>Lista zadań</h1>
-      <p>Dodawaj, edytuj i usuwaj swoje zadania.</p>
-    </header>
 
-    <section class="card">
-      <h2>Dodaj zadanie</h2>
+<body>
+
+  <!-- Nagłówek -->
+  <header class="topbar">
+    <div class="logo">
+      <span class="logo-icon">TM</span>
+      <span>Task Manager</span>
+    </div>
+
+    <button id="open-task-form" class="create-btn" type="button">
+      + Utwórz zadanie
+    </button>
+  </header>
+
+  <main class="container">
+
+    <h1>Tablica zadań</h1>
+
+    <!-- Formularz dodawania i edycji -->
+    <section id="form-section" class="form-section" hidden>
+
+      <div class="form-header">
+        <h2 id="form-heading">Utwórz zadanie</h2>
+
+        <button id="close-form" type="button" aria-label="Zamknij formularz">
+          ✕
+        </button>
+      </div>
 
       <form id="task-form">
+
         <label for="task-title">Tytuł zadania</label>
         <input
           type="text"
@@ -29,16 +52,100 @@
           required
         >
 
-        <button type="submit">Dodaj zadanie</button>
+        <label for="task-description">Opis</label>
+        <textarea
+          id="task-description"
+          placeholder="Wpisz opis zadania (opcjonalnie)"
+          rows="4"
+        ></textarea>
+
+        <label for="task-status">Status</label>
+        <select id="task-status" required>
+          <option value="todo">Nowe</option>
+          <option value="in_progress">W trakcie</option>
+          <option value="done">Zakończone</option>
+        </select>
+
+        <div class="form-actions">
+          <button type="button" id="cancel-form">
+            Anuluj
+          </button>
+
+          <button type="submit" id="save-task">
+            Zapisz zadanie
+          </button>
+        </div>
+
       </form>
 
-      <p id="message" role="status" aria-live="polite"></p>
     </section>
 
-    <section class="card">
-      <h2>Twoje zadania</h2>
-      <ul id="task-list"></ul>
-    </section>
+    <!-- Komunikaty -->
+    <p id="message" role="status" aria-live="polite"></p>
+
+    <!-- Tablica Kanban -->
+    <div class="board">
+
+      <!-- NOWE -->
+      <section class="column column-todo">
+
+        <div class="column-header">
+          <h2>
+            <span class="status-dot blue"></span>
+            NOWE
+          </h2>
+          <span id="todo-count" class="task-count">0</span>
+        </div>
+
+        <div id="todo-tasks" class="task-container"></div>
+
+        <button type="button" class="add-column-task" data-status="todo">
+          + Dodaj zadanie
+        </button>
+
+      </section>
+
+      <!-- W TRAKCIE -->
+      <section class="column column-progress">
+
+        <div class="column-header">
+          <h2>
+            <span class="status-dot orange"></span>
+            W TRAKCIE
+          </h2>
+          <span id="progress-count" class="task-count">0</span>
+        </div>
+
+        <div id="progress-tasks" class="task-container"></div>
+
+        <button type="button" class="add-column-task" data-status="in_progress">
+          + Dodaj zadanie
+        </button>
+
+      </section>
+
+      <!-- ZAKOŃCZONE -->
+      <section class="column column-done">
+
+        <div class="column-header">
+          <h2>
+            <span class="status-dot green"></span>
+            ZAKOŃCZONE
+          </h2>
+          <span id="done-count" class="task-count">0</span>
+        </div>
+
+        <div id="done-tasks" class="task-container"></div>
+
+        <button type="button" class="add-column-task" data-status="done">
+          + Dodaj zadanie
+        </button>
+
+      </section>
+
+    </div>
+
   </main>
+
 </body>
 </html>

@@ -14,10 +14,13 @@ const pool = new Pool({
   password: process.env.DB_PASSWORD
 });
 
+const allowedStatuses = ["todo", "in_progress", "done"];
+
+// Wysyłanie odpowiedzi JSON
 function sendJson(res, status, data) {
   res.writeHead(status, {
     "Content-Type": "application/json; charset=utf-8",
-    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Origin": "http://127.0.0.1:5500",
     "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type"
   });
@@ -25,26 +28,63 @@ function sendJson(res, status, data) {
   res.end(JSON.stringify(data));
 }
 
+// Odczytywanie JSON z żądania
 async function readBody(req) {
-  let body = "";
+  const chunks = [];
+  let size = 0;
 
   for await (const chunk of req) {
-    body += chunk;
+    size += chunk.length;
 
-    if (body.length > 10000) {
-      throw new Error("Request too large");
+    if (size > 10000) {
+      const error = new Error("Zbyt duże żądanie");
+      error.status = 413;
+      throw error;
     }
+
+    chunks.push(chunk);
   }
 
-  return JSON.parse(body);
+  try {
+    return JSON.parse(
+      Buffer.concat(chunks).toString("utf8")
+    );
+  } catch {
+    const error = new Error("Niepoprawny format JSON");
+    error.status = 400;
+    throw error;
+  }
 }
 
-function validTitle(title) {
-  return typeof title === "string" &&
-    title.trim().length >= 3 &&
-    title.trim().length <= 100;
+// Sprawdzanie danych zadania
+function validateTask(body) {
+  if (
+    !body ||
+    typeof body !== "object" ||
+    Array.isArray(body) ||
+    typeof body.title !== "string" ||
+    body.title.trim().length < 3 ||
+    body.title.trim().length > 100
+  ) {
+    return "Tytuł musi mieć od 3 do 100 znaków.";
+  }
+
+  if (
+    body.description !== undefined &&
+    body.description !== null &&
+    typeof body.description !== "string"
+  ) {
+    return "Niepoprawny opis zadania.";
+  }
+
+  if (!allowedStatuses.includes(body.status)) {
+    return "Nieprawidłowy status zadania.";
+  }
+
+  return null;
 }
 
+// Obsługa API
 const server = http.createServer(async (req, res) => {
   const pathname = new URL(
     req.url,
@@ -52,92 +92,98 @@ const server = http.createServer(async (req, res) => {
   ).pathname;
 
   if (req.method === "OPTIONS") {
-    res.writeHead(204, {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type"
-    });
-    return res.end();
+    return sendJson(res, 204, null);
   }
 
   try {
-    // GET - pobierz zadania
-    if (req.method === "GET" && pathname === "/api/tasks") {
+    // GET - pobieranie wszystkich zadań
+    if (
+      req.method === "GET" &&
+      pathname === "/api/tasks"
+    ) {
       const result = await pool.query(
-        "SELECT id, title, description, status FROM tasks ORDER BY id"
+        `SELECT id, title, description, status
+         FROM tasks
+         ORDER BY id ASC`
       );
 
       return sendJson(res, 200, result.rows);
     }
 
-    // POST - dodaj zadanie
-    if (req.method === "POST" && pathname === "/api/tasks") {
-      let body;
+    // POST - tworzenie zadania
+    if (
+      req.method === "POST" &&
+      pathname === "/api/tasks"
+    ) {
+      const body = await readBody(req);
+      const error = validateTask(body);
 
-      try {
-        body = await readBody(req);
-      } catch {
-        return sendJson(res, 400, {
-          error: "Niepoprawne dane JSON"
-        });
-      }
-
-      if (!validTitle(body?.title)) {
-        return sendJson(res, 400, {
-          error: "Tytuł musi mieć od 3 do 100 znaków"
-        });
+      if (error) {
+        return sendJson(res, 400, { error });
       }
 
       const result = await pool.query(
-        `INSERT INTO tasks (title)
-         VALUES ($1)
+        `INSERT INTO tasks (title, description, status)
+         VALUES ($1, $2, $3)
          RETURNING id, title, description, status`,
-        [body.title.trim()]
+        [
+          body.title.trim(),
+          body.description?.trim() || null,
+          body.status
+        ]
       );
 
       return sendJson(res, 201, result.rows[0]);
     }
 
-    const match = pathname.match(/^\/api\/tasks\/(\d+)$/);
+    // Operacje dla konkretnego zadania
+    const match = pathname.match(
+      /^\/api\/tasks\/(\d+)$/
+    );
 
     if (match) {
       const id = Number(match[1]);
 
-      // PUT - aktualizuj zadanie
+      if (!Number.isSafeInteger(id) || id < 1) {
+        return sendJson(res, 400, {
+          error: "Niepoprawne ID zadania."
+        });
+      }
+
+      // PUT - edycja tytułu, opisu i statusu
       if (req.method === "PUT") {
-        let body;
+        const body = await readBody(req);
+        const error = validateTask(body);
 
-        try {
-          body = await readBody(req);
-        } catch {
-          return sendJson(res, 400, {
-            error: "Niepoprawne dane JSON"
-          });
-        }
-
-        if (!validTitle(body?.title)) {
-          return sendJson(res, 400, {
-            error: "Niepoprawny tytuł zadania"
-          });
+        if (error) {
+          return sendJson(res, 400, { error });
         }
 
         const result = await pool.query(
-          `UPDATE tasks SET title = $1
-           WHERE id = $2
+          `UPDATE tasks
+           SET title = $1,
+               description = $2,
+               status = $3
+           WHERE id = $4
            RETURNING id, title, description, status`,
-          [body.title.trim(), id]
+          [
+            body.title.trim(),
+            body.description?.trim() || null,
+            body.status,
+            id
+          ]
         );
 
         if (result.rowCount === 0) {
           return sendJson(res, 404, {
-            error: "Nie znaleziono zadania"
+            error: "Nie znaleziono zadania."
           });
         }
 
         return sendJson(res, 200, result.rows[0]);
       }
 
-      // DELETE - usuń zadanie
+      // DELETE - usuwanie zadania
       if (req.method === "DELETE") {
         const result = await pool.query(
           "DELETE FROM tasks WHERE id = $1 RETURNING id",
@@ -146,28 +192,35 @@ const server = http.createServer(async (req, res) => {
 
         if (result.rowCount === 0) {
           return sendJson(res, 404, {
-            error: "Nie znaleziono zadania"
+            error: "Nie znaleziono zadania."
           });
         }
 
         return sendJson(res, 200, {
-          message: "Zadanie usunięte"
+          message: "Zadanie zostało usunięte."
         });
       }
     }
 
     return sendJson(res, 404, {
-      error: "Nie znaleziono endpointu"
+      error: "Nie znaleziono endpointu."
     });
   } catch (error) {
-    console.error("Database/API error:", error);
+    console.error("API error:", error);
+
+    if (error.status === 400 || error.status === 413) {
+      return sendJson(res, error.status, {
+        error: error.message
+      });
+    }
 
     return sendJson(res, 500, {
-      error: "Błąd serwera"
+      error: "Błąd serwera."
     });
   }
 });
 
+// Sprawdzenie połączenia z PostgreSQL
 pool.query("SELECT 1")
   .then(() => {
     server.listen(PORT, () => {
@@ -176,7 +229,10 @@ pool.query("SELECT 1")
     });
   })
   .catch((error) => {
-    console.error("Błąd połączenia z PostgreSQL:", error.message);
+    console.error(
+      "Błąd połączenia z PostgreSQL:",
+      error.message
+    );
     process.exitCode = 1;
     pool.end();
   });
