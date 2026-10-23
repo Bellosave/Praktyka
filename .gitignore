@@ -11,3 +11,6 @@ Thumbs.db
 .vscode/*
 !.vscode/extensions.json
 *.backup
+backend/.env
+backend/node_modules/
+backend/tasks.json

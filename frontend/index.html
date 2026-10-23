@@ -1,15 +1,44 @@
+
 <!DOCTYPE html>
 <html lang="pl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mój projekt</title>
+  <title>Lista zadań</title>
   <link rel="stylesheet" href="css/style.css">
   <script src="js/app.js" defer></script>
 </head>
 <body>
-  <h1>Mój pierwszy projekt z CI</h1>
-  <p>Uczę się korzystać z GitHub.</p>
-  <button id="hello-button" type="button">Kliknij mnie</button>
+  <main class="container">
+    <header>
+      <h1>Lista zadań</h1>
+      <p>Dodawaj, edytuj i usuwaj swoje zadania.</p>
+    </header>
+
+    <section class="card">
+      <h2>Dodaj zadanie</h2>
+
+      <form id="task-form">
+        <label for="task-title">Tytuł zadania</label>
+        <input
+          type="text"
+          id="task-title"
+          placeholder="Wpisz tytuł zadania"
+          minlength="3"
+          maxlength="100"
+          required
+        >
+
+        <button type="submit">Dodaj zadanie</button>
+      </form>
+
+      <p id="message" role="status" aria-live="polite"></p>
+    </section>
+
+    <section class="card">
+      <h2>Twoje zadania</h2>
+      <ul id="task-list"></ul>
+    </section>
+  </main>
 </body>
 </html>
